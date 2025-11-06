@@ -26,13 +26,16 @@ public class ClientServiceImpl implements ClientService {
         String host = clientConfig.getHost();
         int port = clientConfig.getPort();
 
+        // Socket Creation
         try(Socket socket = new Socket(host,port)){
             socket.setSoTimeout(10000);
 
+            // Send Request
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write((json.trim()+"\n").getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
 
+            // Read Response
             try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8))){
                 String response = bufferedReader.readLine();
 
