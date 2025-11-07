@@ -9,3 +9,35 @@ switch:
   port: 5000
   host: localhost
 
+routing:
+  bank-A-endpoints:
+    - "123451"
+    - "123452"
+    - "123453"
+
+  bank-B-endpoints:
+    - "123454"
+    - "123455"
+    - "123456"
+
+  blacklisted-pan:
+    - "123457111111"
+    - "123458111111"
+    - "123459111111"
+
+  default-endpoint: "Default Endpoint"
+
+limits:
+  amount-max: 1000
+  amount-min: 1
+  pan-min-length: 12
+  pan-max-length: 19
+
+blackListedPan:
+
+
+
+
+
+
+
