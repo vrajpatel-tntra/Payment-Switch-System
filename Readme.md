@@ -32,7 +32,7 @@ The project uses a **custom lightweight JSON message format** (instead of ISO 85
 
 ###  End-to-End Communication Flow
 
-```mermaid
+```text
  Postman / Web App (HTTP JSON)] --> pss_client (REST Controller)
                         ↓
       ClientService  TCP Socket --> pss_server
@@ -51,9 +51,12 @@ The project uses a **custom lightweight JSON message format** (instead of ISO 85
                         ↓
       Response JSON --> Sent back to client over TCP
 ```
-##  • Project Structure
-```mermaid
 
+
+
+## • Project Structure
+
+```text
 Payment-Switch-System
 │
 ├── pss_client
