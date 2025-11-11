@@ -22,9 +22,9 @@ public class ClientController {
 
     @PostMapping("/send")
     @Operation(summary = "Send Transaction Message", description = "Sends a JSON transaction request over TCP to the Payment Switch Server.")
-    public ResponseEntity<String> sendMessage(@RequestBody String jsonRequest){
+    public ResponseEntity<String> sendMessage(@RequestBody String jsonRequest) {
 
-        try{
+        try {
             String response = clientService.sendRequest(jsonRequest);
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -32,14 +32,12 @@ public class ClientController {
 
             String responseCode = jsonNode.path("responseCode").asText();
 
-            if("00".equals(responseCode)){
+            if ("00".equals(responseCode)) {
                 return ResponseEntity.ok(response);
-            }
-            else{
+            } else {
                 return ResponseEntity.badRequest().body(response);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

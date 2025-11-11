@@ -8,23 +8,25 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.ip.tcp.TcpInboundGateway;
 import org.springframework.integration.ip.tcp.connection.TcpNetServerConnectionFactory;
-import org.springframework.integration.ip.tcp.serializer.ByteArrayLfSerializer;
+import org.springframework.integration.ip.tcp.serializer.ByteArrayCrLfSerializer;
 import org.springframework.messaging.MessageChannel;
 
 @Configuration
 @IntegrationComponentScan
 @ConfigurationProperties(prefix = "switch")
+
 public class TcpServerConfig {
 
     @Value("${switch.port}")
     private int port;
 
-    // establishes Connection & performs Serialization and Deserialization
+    // Establishes Connection & perform Serialization and Deserialization
     @Bean
-    public TcpNetServerConnectionFactory serverConnectionFactory(){
+    public TcpNetServerConnectionFactory serverConnectionFactory() {
+
         TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(port);
 
-        ByteArrayLfSerializer serializer = new ByteArrayLfSerializer();
+        ByteArrayCrLfSerializer serializer = new ByteArrayCrLfSerializer();
         factory.setSerializer(serializer);
         factory.setDeserializer(serializer);
 
@@ -32,13 +34,13 @@ public class TcpServerConfig {
     }
 
     @Bean
-    public MessageChannel inputChannel(){
+    public MessageChannel inputChannel() {
         return new DirectChannel();
     }
 
     // set up connection and channels
     @Bean
-    public TcpInboundGateway inboundGateway(TcpNetServerConnectionFactory factory){
+    public TcpInboundGateway inboundGateway(TcpNetServerConnectionFactory factory) {
 
         TcpInboundGateway inboundGateway = new TcpInboundGateway();
 

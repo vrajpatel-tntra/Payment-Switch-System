@@ -39,25 +39,25 @@ public class RouterService {
     }
 
     // Routing Method
-    public String routeDestination(String pan){
+    public String routeDestination(String pan) {
 
-        if(pan == null || pan.length()<6){
+        if (pan == null || pan.length() < 6) {
             return "Invalid PAN";
         }
 
-        String bin = pan.substring(0,6);
+        String bin = pan.substring(0, 6);
 
-        for(String bankA : bankAEndpoints){
-            if(bin.startsWith(bankA)){
-                return "Bank-A "+bankA;
+        for (String bankA : bankAEndpoints) {
+            if (bin.startsWith(bankA)) {
+                return "Bank-A ";
             }
         }
 
-        for(String bankB : bankBEndpoints){
-            if(bin.startsWith(bankB)){
-                return "Bank-B "+bankB;
+        for (String bankB : bankBEndpoints) {
+            if (bin.startsWith(bankB)) {
+                return "Bank-B ";
             }
         }
-     return defaultEndpoint;
+        return defaultEndpoint;
     }
 }

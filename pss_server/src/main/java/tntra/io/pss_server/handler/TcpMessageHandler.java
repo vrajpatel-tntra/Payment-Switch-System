@@ -1,61 +1,55 @@
-//package tntra.io.pss_server.handler;
-//
-//import org.springframework.messaging.Message;
-//import org.springframework.messaging.MessageChannel;
-//import org.springframework.messaging.MessageHandler;
-//import org.springframework.messaging.MessagingException;
-//import org.springframework.messaging.support.GenericMessage;
-//
-//public class TcpMessageHandler implements MessageHandler {
-//    @Override
-//    public void handleMessage(Message<?> message) throws MessagingException {
-//
-//        try{
-//            String payload = message.getPayload().toString();
-//
-//            // temporary
-//            System.out.println("Received message from client: " + payload);
-//
-//            // Prepare a simple acknowledgment response
-//            String response = "Message received successfully!";
-//
-//            // Send response back to the same TCP connection
-//            MessageChannel replyChannel = (MessageChannel) message.getHeaders().getReplyChannel();
-//            if (replyChannel != null) {
-//                replyChannel.send(new GenericMessage<>(response));
-//                System.out.println("✅ Sent acknowledgment back to client");
-//            } else {
-//                System.out.println("⚠️ No reply channel found — client may not be expecting response.");
-//            }
-//        }
-//        catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//}
-
 package tntra.io.pss_server.handler;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
+import tntra.io.pss_server.model.TransactionMessage;
+import tntra.io.pss_server.route.RouterService;
+import tntra.io.pss_server.validation.ValidationService;
 
 @Component
-public class TcpMessageHandler  {
+public class TcpMessageHandler {
+
+    @Autowired
+    ValidationService validationService;
+
+    @Autowired
+    RouterService routerService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @ServiceActivator(inputChannel = "inputChannel")
     public String handleMessage(Message<?> message) throws MessagingException {
+
         try {
+            // Bytes format --> String format
+            String stringPayload = new String((byte[]) message.getPayload());
 
-            String textPayload = new String((byte[]) message.getPayload());
+            System.out.println("Received message in bytes : " + message);
 
-            // Bytes format to String format
-            System.out.println("Received message from client: " + textPayload);
+            if (stringPayload.isEmpty() || !stringPayload.startsWith("{")) {
+                throw new IllegalArgumentException("JSON format error" + stringPayload);
+            }
 
-            String response = "Message received successfully!"+textPayload;
-            return response;
+            // String format --> Entity Obj format
+            TransactionMessage objPayload = objectMapper.readValue(stringPayload, TransactionMessage.class);
+
+            // Validation
+            validationService.validateTransaction(objPayload);
+
+            // Routing
+            String objPan = objPayload.getPan();
+            String destination = routerService.routeDestination(objPan);
+            objPayload.setDestination(destination);
+            System.out.println("Destination:" + destination);
+
+            //Entity obj format --> String format
+            String responseString = objectMapper.writeValueAsString(objPayload);
+            return responseString;
 
         } catch (Exception e) {
             throw new MessagingException("Error handling message: " + e.getMessage(), e);

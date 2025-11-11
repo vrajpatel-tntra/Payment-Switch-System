@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import tntra.io.pss_server.model.TransactionMessage;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @ConfigurationProperties(prefix = "routing")
@@ -35,20 +34,20 @@ public class ValidationService {
         this.blackListedPan = blackListedPan;
     }
 
-    public void validateTransaction(TransactionMessage message){
+    public void validateTransaction(TransactionMessage message) {
 
         // Id validation
-        if(message.getTransactionId() == null || message.getTransactionId().isEmpty() ){
+        if (message.getTransactionId() == null || message.getTransactionId().isEmpty()) {
             message.setResponseCode("01");
             return;
         }
 
         // Pan Validation
-        if(message.getPan() == null){
+        if (message.getPan() == null) {
             message.setResponseCode("02");
             return;
         }
-        if(message.getPan().length() < panMinLength || message.getPan().length() >panMaxLength){
+        if (message.getPan().length() < panMinLength || message.getPan().length() > panMaxLength) {
             message.setResponseCode("02");
             return;
         }
@@ -56,16 +55,15 @@ public class ValidationService {
         // Amount Validation
         Double amount = Double.parseDouble(message.getAmount());
 
-        if(amount < minAmount || amount >maxAmount || amount == null){
+        if (amount < minAmount || amount > maxAmount || amount == null) {
             message.setResponseCode("03");
             return;
         }
 
-        if(blackListedPan.contains(message.getPan())){
+        if (blackListedPan.contains(message.getPan())) {
             message.setResponseCode("04");
             return;
         }
-
         message.setResponseCode("00");
     }
 }

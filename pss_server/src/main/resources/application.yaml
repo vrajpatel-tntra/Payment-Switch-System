@@ -28,16 +28,7 @@ routing:
   default-endpoint: "Default Endpoint"
 
 limits:
-  amount-max: 1000
+  amount-max: 10000
   amount-min: 1
   pan-min-length: 12
   pan-max-length: 19
-
-blackListedPan:
-
-
-
-
-
-
-

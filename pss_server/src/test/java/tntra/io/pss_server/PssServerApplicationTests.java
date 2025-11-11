@@ -9,5 +9,4 @@ class PssServerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

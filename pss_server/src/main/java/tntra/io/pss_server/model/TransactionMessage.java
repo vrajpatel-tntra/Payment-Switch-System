@@ -1,10 +1,5 @@
 package tntra.io.pss_server.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public class TransactionMessage {
 
     private String transactionId;
@@ -12,6 +7,25 @@ public class TransactionMessage {
     private String amount;
     private String responseCode;
     private String destination;
+
+    public TransactionMessage() {
+    }
+
+    // For incoming client data
+    public TransactionMessage(String transactionId, String pan, String amount) {
+        this.transactionId = transactionId;
+        this.pan = pan;
+        this.amount = amount;
+    }
+
+    // For server-side full construction
+    public TransactionMessage(String transactionId, String pan, String amount, String responseCode, String destination) {
+        this.transactionId = transactionId;
+        this.pan = pan;
+        this.amount = amount;
+        this.responseCode = responseCode;
+        this.destination = destination;
+    }
 
     public String getTransactionId() {
         return transactionId;
@@ -52,6 +66,4 @@ public class TransactionMessage {
     public void setDestination(String destination) {
         this.destination = destination;
     }
-
-
 }
